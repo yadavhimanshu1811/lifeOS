@@ -143,6 +143,47 @@ export default function FitnessPage() {
   const [groupBy, setGroupBy] = useState<'individual' | 'day' | 'week' | 'month' | 'year'>('individual');
   const [typeFilter, setTypeFilter] = useState<string>('all');
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
+  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
+  const [isPRModalOpen, setIsPRModalOpen] = useState(false);
+  const [personalRecords, setPersonalRecords] = useState<Record<string, {name: string, value: string}[]>>({});
+
+  useEffect(() => {
+    const saved = localStorage.getItem('personal_records');
+    if (saved) {
+      try {
+        setPersonalRecords(JSON.parse(saved));
+      } catch (e) {}
+    } else {
+      setPersonalRecords({
+        "Running": [
+          { name: "100mtr", value: "" },
+          { name: "200mtr", value: "" },
+          { name: "400mtr", value: "" },
+          { name: "800mtr", value: "" },
+          { name: "1km", value: "" },
+          { name: "1600mtr", value: "" },
+          { name: "5km", value: "" },
+          { name: "10km", value: "" },
+          { name: "20km", value: "" },
+          { name: "Half Marathon", value: "" },
+          { name: "30km", value: "" },
+          { name: "Marathon", value: "" }
+        ],
+        "Strength": [
+          { name: "Bench Press", value: "" },
+          { name: "Squats", value: "" },
+          { name: "Deadlifts", value: "" },
+          { name: "Pushups", value: "" },
+          { name: "Pullups", value: "" }
+        ]
+      });
+    }
+  }, []);
+
+  const savePRs = (newPRs: Record<string, {name: string, value: string}[]>) => {
+    setPersonalRecords(newPRs);
+    localStorage.setItem('personal_records', JSON.stringify(newPRs));
+  };
 
   const fetchActivities = async (force = false) => {
     if (!force) {
@@ -323,67 +364,18 @@ export default function FitnessPage() {
       )}
 
       <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
-        {/* Top Filters Bar */}
-        <div className="filters-container glass-panel" style={{ display: "flex", flexWrap: "wrap", gap: "1rem", padding: "1rem", borderRadius: "12px", alignItems: "flex-end", justifyContent: "space-between" }}>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", alignItems: "flex-end" }}>
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
-              <label style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "500", textTransform: "uppercase" }}>Start Date</label>
-              <input 
-                type="date" 
-                value={startDate} 
-                onChange={e => setStartDate(e.target.value)}
-                style={{ padding: "0.5rem 0.8rem", borderRadius: "8px", border: "1px solid var(--surface-border)", background: "rgba(255,255,255,0.05)", color: "var(--text-primary)", colorScheme: "dark" }}
-              />
-            </div>
-            
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
-              <label style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "500", textTransform: "uppercase" }}>End Date</label>
-              <input 
-                type="date" 
-                value={endDate} 
-                onChange={e => setEndDate(e.target.value)}
-                style={{ padding: "0.5rem 0.8rem", borderRadius: "8px", border: "1px solid var(--surface-border)", background: "rgba(255,255,255,0.05)", color: "var(--text-primary)", colorScheme: "dark" }}
-              />
-            </div>
-            
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
-              <label style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "500", textTransform: "uppercase" }}>Type</label>
-              <select 
-                value={typeFilter} 
-                onChange={e => setTypeFilter(e.target.value)}
-                style={{ padding: "0.5rem 0.8rem", borderRadius: "8px", border: "1px solid var(--surface-border)", background: "rgba(255,255,255,0.05)", color: "var(--text-primary)" }}
-              >
-                <option value="all" style={{ color: "black" }}>All Types</option>
-                <option value="run" style={{ color: "black" }}>Run</option>
-                <option value="walk" style={{ color: "black" }}>Walk</option>
-                <option value="ride" style={{ color: "black" }}>Cycling</option>
-                <option value="swim" style={{ color: "black" }}>Swim</option>
-              </select>
-            </div>
-
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
-              <label style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "500", textTransform: "uppercase" }}>Group By</label>
-              <select 
-                value={groupBy} 
-                onChange={e => setGroupBy(e.target.value as any)}
-                style={{ padding: "0.5rem 0.8rem", borderRadius: "8px", border: "1px solid var(--surface-border)", background: "rgba(255,255,255,0.05)", color: "var(--text-primary)" }}
-              >
-                <option value="individual" style={{ color: "black" }}>Individual</option>
-                <option value="day" style={{ color: "black" }}>Day</option>
-                <option value="week" style={{ color: "black" }}>Week</option>
-                <option value="month" style={{ color: "black" }}>Month</option>
-                <option value="year" style={{ color: "black" }}>Year</option>
-              </select>
-            </div>
-            
-            {(startDate || endDate || typeFilter !== 'all') && (
-              <button 
-                onClick={() => { setStartDate(''); setEndDate(''); setTypeFilter('all'); }}
-                style={{ padding: "0.5rem 0.8rem", borderRadius: "8px", background: "transparent", border: "1px solid var(--surface-border)", color: "var(--text-secondary)", cursor: "pointer", height: "37px" }}
-              >
-                Clear
-              </button>
-            )}
+        {/* Top Controls Bar */}
+        <div className="filters-container glass-panel" style={{ display: "flex", flexWrap: "wrap", gap: "1rem", padding: "1rem", borderRadius: "12px", alignItems: "center", justifyContent: "space-between", position: "relative" }}>
+          <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+            <button 
+              onClick={() => setIsFiltersOpen(!isFiltersOpen)}
+              style={{ padding: "0.5rem 1rem", borderRadius: "8px", background: isFiltersOpen ? "rgba(255,255,255,0.1)" : "transparent", border: "1px solid var(--surface-border)", color: "var(--text-primary)", cursor: "pointer", height: "37px", display: "flex", alignItems: "center", gap: "0.5rem" }}
+            >
+              <span>⚙️ Filters</span>
+              {(startDate || endDate || typeFilter !== 'all' || groupBy !== 'individual') && (
+                <span style={{ background: "var(--accent-color)", color: "white", borderRadius: "50%", width: "8px", height: "8px", display: "inline-block" }}></span>
+              )}
+            </button>
 
             <button 
               onClick={() => fetchActivities(true)}
@@ -391,7 +383,13 @@ export default function FitnessPage() {
               style={{ padding: "0.5rem 0.8rem", borderRadius: "8px", background: "transparent", border: "1px solid var(--surface-border)", color: "var(--text-primary)", cursor: loading || !isConnected ? "not-allowed" : "pointer", opacity: isConnected ? 1 : 0.5, display: "flex", alignItems: "center", gap: "0.5rem", height: "37px" }}
               title="Refresh Strava Data"
             >
-              🔄
+              Refresh 🔄
+            </button>
+            <button 
+              onClick={() => setIsPRModalOpen(true)}
+              style={{ padding: "0.5rem 0.8rem", borderRadius: "8px", background: "var(--surface-color)", border: "1px solid var(--accent-color)", color: "var(--accent-color)", cursor: "pointer", display: "flex", alignItems: "center", gap: "0.5rem", height: "37px", fontWeight: "600" }}
+            >
+              My PRs 🏆
             </button>
           </div>
 
@@ -401,6 +399,83 @@ export default function FitnessPage() {
           >
             + Add a workout
           </button>
+
+          {/* Filters Dropdown/Popover */}
+          {isFiltersOpen && (
+            <div style={{ position: "absolute", top: "100%", left: "0", marginTop: "0.5rem", padding: "1.5rem", borderRadius: "12px", zIndex: 50, display: "flex", flexDirection: "column", gap: "1.5rem", width: "100%", maxWidth: "350px", background: "#1a1a24", border: "1px solid var(--surface-border)", boxShadow: "0 10px 40px rgba(0,0,0,0.8)" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <h3 style={{ margin: 0, fontSize: "1.1rem", color: "var(--text-primary)", fontWeight: "600" }}>Filters</h3>
+                <button onClick={() => setIsFiltersOpen(false)} style={{ background: "transparent", border: "none", color: "var(--text-secondary)", cursor: "pointer", fontSize: "1.2rem" }}>&times;</button>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
+                  <label style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "500", textTransform: "uppercase" }}>Start Date</label>
+                  <input 
+                    type="date" 
+                    value={startDate} 
+                    onChange={e => setStartDate(e.target.value)}
+                    style={{ padding: "0.5rem 0.8rem", borderRadius: "8px", border: "1px solid var(--surface-border)", background: "rgba(255,255,255,0.05)", color: "var(--text-primary)", colorScheme: "dark", width: "100%" }}
+                  />
+                </div>
+                
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
+                  <label style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "500", textTransform: "uppercase" }}>End Date</label>
+                  <input 
+                    type="date" 
+                    value={endDate} 
+                    onChange={e => setEndDate(e.target.value)}
+                    style={{ padding: "0.5rem 0.8rem", borderRadius: "8px", border: "1px solid var(--surface-border)", background: "rgba(255,255,255,0.05)", color: "var(--text-primary)", colorScheme: "dark", width: "100%" }}
+                  />
+                </div>
+              </div>
+              
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
+                <label style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "500", textTransform: "uppercase" }}>Type</label>
+                <select 
+                  value={typeFilter} 
+                  onChange={e => setTypeFilter(e.target.value)}
+                  style={{ padding: "0.5rem 0.8rem", borderRadius: "8px", border: "1px solid var(--surface-border)", background: "rgba(255,255,255,0.05)", color: "var(--text-primary)", width: "100%" }}
+                >
+                  <option value="all" style={{ color: "black" }}>All Types</option>
+                  <option value="run" style={{ color: "black" }}>Run</option>
+                  <option value="walk" style={{ color: "black" }}>Walk</option>
+                  <option value="ride" style={{ color: "black" }}>Cycling</option>
+                  <option value="swim" style={{ color: "black" }}>Swim</option>
+                </select>
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
+                <label style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: "500", textTransform: "uppercase" }}>Group By</label>
+                <select 
+                  value={groupBy} 
+                  onChange={e => setGroupBy(e.target.value as any)}
+                  style={{ padding: "0.5rem 0.8rem", borderRadius: "8px", border: "1px solid var(--surface-border)", background: "rgba(255,255,255,0.05)", color: "var(--text-primary)", width: "100%" }}
+                >
+                  <option value="individual" style={{ color: "black" }}>Individual</option>
+                  <option value="day" style={{ color: "black" }}>Day</option>
+                  <option value="week" style={{ color: "black" }}>Week</option>
+                  <option value="month" style={{ color: "black" }}>Month</option>
+                  <option value="year" style={{ color: "black" }}>Year</option>
+                </select>
+              </div>
+              
+              <div style={{ display: "flex", justifyContent: "space-between", gap: "1rem", marginTop: "0.5rem" }}>
+                <button 
+                  onClick={() => { setStartDate(''); setEndDate(''); setTypeFilter('all'); setGroupBy('individual'); }}
+                  style={{ padding: "0.5rem 1rem", borderRadius: "8px", background: "transparent", border: "1px solid var(--surface-border)", color: "var(--text-secondary)", cursor: "pointer", flex: 1 }}
+                >
+                  Clear filters
+                </button>
+                <button 
+                  onClick={() => setIsFiltersOpen(false)}
+                  style={{ padding: "0.5rem 1rem", borderRadius: "8px", background: "var(--accent-color)", border: "none", color: "white", cursor: "pointer", flex: 1, fontWeight: "600" }}
+                >
+                  Apply
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Main Content Area */}
@@ -542,6 +617,76 @@ export default function FitnessPage() {
                 </div>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* PR Modal Overlay */}
+      {isPRModalOpen && (
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.7)", backdropFilter: "blur(6px)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 100, padding: "1rem" }} onClick={() => setIsPRModalOpen(false)}>
+          <div style={{ background: "#1a1a24", borderRadius: "16px", padding: "2rem", width: "100%", maxWidth: "800px", maxHeight: "90vh", overflowY: "auto", position: "relative", border: "1px solid var(--surface-border)", boxShadow: "0 20px 40px rgba(0,0,0,0.5)" }} onClick={e => e.stopPropagation()}>
+            <button onClick={() => setIsPRModalOpen(false)} style={{ position: "absolute", top: "1.5rem", right: "1.5rem", background: "rgba(255,255,255,0.1)", border: "none", color: "var(--text-secondary)", cursor: "pointer", width: "32px", height: "32px", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.2s" }}>
+              &times;
+            </button>
+
+            <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "2rem" }}>
+              <span style={{ fontSize: "2.5rem", background: "rgba(252, 76, 2, 0.1)", padding: "1rem", borderRadius: "16px", color: "var(--accent-color)" }}>🏆</span>
+              <div>
+                <h2 style={{ margin: 0, fontSize: "1.5rem", color: "var(--text-primary)", fontWeight: "600" }}>My Personal Records</h2>
+                <p style={{ margin: "0.2rem 0 0", color: "var(--text-secondary)", fontSize: "0.9rem" }}>Track your best performances across all activities</p>
+              </div>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
+              {Object.entries(personalRecords).map(([category, records]) => (
+                <div key={category}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem", paddingBottom: "0.5rem", borderBottom: "1px solid var(--surface-border)" }}>
+                    <h3 style={{ margin: 0, color: "var(--accent-color)", fontSize: "1.1rem" }}>{category}</h3>
+                    <button 
+                      onClick={() => {
+                        const name = prompt(`Enter new exercise for ${category}:`);
+                        if (name) {
+                          savePRs({ ...personalRecords, [category]: [...records, { name, value: "" }] });
+                        }
+                      }}
+                      style={{ background: "transparent", border: "1px solid var(--surface-border)", color: "var(--text-secondary)", borderRadius: "4px", padding: "0.2rem 0.5rem", fontSize: "0.8rem", cursor: "pointer" }}
+                    >
+                      + Add Record
+                    </button>
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "1rem" }}>
+                    {records.map((record, index) => (
+                      <div key={index} style={{ display: "flex", flexDirection: "column", gap: "0.4rem", background: "rgba(255,255,255,0.03)", padding: "0.8rem", borderRadius: "8px" }}>
+                        <label style={{ fontSize: "0.8rem", color: "var(--text-secondary)", fontWeight: "500" }}>{record.name}</label>
+                        <input 
+                          type="text" 
+                          placeholder="e.g. 12.5s or 100kg"
+                          value={record.value}
+                          onChange={(e) => {
+                            const updated = [...records];
+                            updated[index].value = e.target.value;
+                            savePRs({ ...personalRecords, [category]: updated });
+                          }}
+                          style={{ background: "transparent", border: "none", borderBottom: "1px solid var(--surface-border)", color: "var(--text-primary)", padding: "0.2rem 0", fontSize: "1rem", outline: "none" }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <button 
+              onClick={() => {
+                const category = prompt("Enter new category name:");
+                if (category && !personalRecords[category]) {
+                  savePRs({ ...personalRecords, [category]: [] });
+                }
+              }}
+              style={{ width: "100%", padding: "1rem", marginTop: "2rem", background: "rgba(255,255,255,0.05)", border: "1px dashed var(--surface-border)", color: "var(--text-secondary)", borderRadius: "12px", cursor: "pointer", display: "flex", justifyContent: "center", alignItems: "center", gap: "0.5rem", transition: "all 0.2s" }}
+            >
+              + Add New Category
+            </button>
           </div>
         </div>
       )}
