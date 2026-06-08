@@ -365,7 +365,7 @@ export default function FitnessPage() {
 
       <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
         {/* Top Controls Bar */}
-        <div className="filters-container glass-panel" style={{ display: "flex", flexWrap: "wrap", gap: "1rem", padding: "1rem", borderRadius: "12px", alignItems: "center", justifyContent: "space-between", position: "relative" }}>
+        <div className="filters-container glass-panel" style={{ display: "flex", flexWrap: "wrap", gap: "1rem", padding: "0.5rem 1rem", borderRadius: "12px", alignItems: "center", justifyContent: "space-between", position: "relative" }}>
           <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
             <button 
               onClick={() => setIsFiltersOpen(!isFiltersOpen)}
