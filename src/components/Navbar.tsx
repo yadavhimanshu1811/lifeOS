@@ -9,6 +9,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const { theme, toggleTheme } = useTheme();
+  //testing
 
   const navs = [
     { name: "Home", path: "/", icon: "🏠" },
@@ -26,7 +27,7 @@ export default function Navbar() {
         <Link href="/" className="navbar-logo gradient-text">
           LifeOS
         </Link>
-        
+
         {/* Desktop Menu */}
         <div className="navbar-menu-desktop">
           {navs.map((nav) => (
@@ -42,9 +43,9 @@ export default function Navbar() {
 
         <div className="navbar-actions">
           {/* Theme Toggle Button */}
-          <button 
-            className="theme-toggle" 
-            onClick={toggleTheme} 
+          <button
+            className="theme-toggle"
+            onClick={toggleTheme}
             aria-label="Toggle Theme"
             title={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
           >
