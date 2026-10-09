@@ -366,7 +366,7 @@ body {
 
 .navbar-menu-desktop {
   display: flex;
-  gap: 1.5rem;
+  gap: clamp(0.4rem, 1.1vw, 1.25rem);
   align-items: center;
 }
 
@@ -404,14 +404,15 @@ body {
 }
 
 .nav-link {
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   font-weight: 500;
   color: var(--text-secondary);
   transition: all 0.2s ease;
   position: relative;
   text-decoration: none;
-  padding: 0.5rem 1rem;
+  padding: 0.45rem 0.75rem;
   border-radius: 12px;
+  white-space: nowrap;
 }
 
 .nav-link:hover {

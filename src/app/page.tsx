@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Home() {
   return (
     <main className="app-container" style={{ textAlign: "center" }}>
@@ -14,14 +16,15 @@ export default function Home() {
           { name: "Todo List", path: "/todo", icon: "✓" },
           { name: "Habit Tracker", path: "/habit-tracker", icon: "↺" },
           { name: "Fitness", path: "/fitness", icon: "💪" },
+          { name: "Target run", path: "/target-run", icon: "🎯" },
           { name: "Journalling", path: "/journalling", icon: "✍️" },
           { name: "Wardrobe", path: "/wardrobe", icon: "👕" },
           { name: "Games", path: "/games", icon: "🎮" },
         ].map((link) => (
-          <a key={link.name} href={link.path} className="todo-item" style={{ flexDirection: "column", gap: "1rem", textDecoration: "none", color: "inherit" }}>
+          <Link key={link.name} href={link.path} className="todo-item" style={{ flexDirection: "column", gap: "1rem", textDecoration: "none", color: "inherit" }}>
             <span style={{ fontSize: "2rem" }}>{link.icon}</span>
             <span style={{ fontWeight: "600", fontSize: "1.1rem" }}>{link.name}</span>
-          </a>
+          </Link>
         ))}
       </div>
     </main>
