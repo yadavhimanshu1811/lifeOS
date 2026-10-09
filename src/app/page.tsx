@@ -16,7 +16,7 @@ export default function Home() {
           { name: "Todo List", path: "/todo", icon: "✓" },
           { name: "Habit Tracker", path: "/habit-tracker", icon: "↺" },
           { name: "Fitness", path: "/fitness", icon: "💪" },
-          { name: "Target run", path: "/target-run", icon: "🎯" },
+          { name: "Hybrid Fitness", path: "/hybrid-fitness", icon: "⚡" },
           { name: "Journalling", path: "/journalling", icon: "✍️" },
           { name: "Wardrobe", path: "/wardrobe", icon: "👕" },
           { name: "Games", path: "/games", icon: "🎮" },
