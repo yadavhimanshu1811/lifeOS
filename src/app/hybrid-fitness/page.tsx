@@ -66,12 +66,12 @@ const INITIAL_CATEGORIES: BenchmarkCategory[] = [
     bgGradient: "linear-gradient(135deg, rgba(236, 72, 153, 0.1) 0%, rgba(168, 85, 247, 0.05) 100%)",
     borderColor: "rgba(236, 72, 153, 0.25)",
     items: [
-      { id: "o-1", name: "Max pullups", prValue: "", unitPlaceholder: "e.g. 22 reps", history: [] },
-      { id: "o-2", name: "Weighted pullups", prValue: "", unitPlaceholder: "e.g. +35 kg", history: [] },
-      { id: "o-3", name: "Max muscleups", prValue: "", unitPlaceholder: "e.g. 8 reps", history: [] },
-      { id: "o-4", name: "Max pushups", prValue: "", unitPlaceholder: "e.g. 55 reps", history: [] },
-      { id: "o-5", name: "Max squats", prValue: "", unitPlaceholder: "e.g. 75 reps", history: [] },
-      { id: "o-6", name: "Max wall balls", prValue: "", unitPlaceholder: "e.g. 40 reps", history: [] },
+      { id: "o-1", name: "Max Pullups", prValue: "", unitPlaceholder: "e.g. 22 reps", history: [] },
+      { id: "o-2", name: "Weighted Pullups", prValue: "", unitPlaceholder: "e.g. +35 kg", history: [] },
+      { id: "o-3", name: "Max Muscleups", prValue: "", unitPlaceholder: "e.g. 8 reps", history: [] },
+      { id: "o-4", name: "Max Pushups", prValue: "", unitPlaceholder: "e.g. 55 reps", history: [] },
+      { id: "o-5", name: "Max Squats", prValue: "", unitPlaceholder: "e.g. 75 reps", history: [] },
+      { id: "o-6", name: "Max Wall Balls", prValue: "", unitPlaceholder: "e.g. 40 reps", history: [] },
     ],
   },
 ];
@@ -323,19 +323,59 @@ export default function HybridFitnessPage() {
                   </div>
                 </div>
 
-                <span
-                  style={{
-                    fontSize: "0.7rem",
-                    fontWeight: "600",
-                    color: category.accentColor,
-                    background: "rgba(255, 255, 255, 0.08)",
-                    padding: "0.2rem 0.5rem",
-                    borderRadius: "16px",
-                    border: `1px solid ${category.borderColor}`,
-                  }}
-                >
-                  {category.items.length} Benchmarks
-                </span>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+                  <span
+                    style={{
+                      fontSize: "0.7rem",
+                      fontWeight: "600",
+                      color: category.accentColor,
+                      background: "rgba(255, 255, 255, 0.08)",
+                      padding: "0.2rem 0.5rem",
+                      borderRadius: "16px",
+                      border: `1px solid ${category.borderColor}`,
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {category.items.length} Benchmarks
+                  </span>
+
+                  <button
+                    onClick={() => handleAddBenchmark(category.id)}
+                    title={`Add benchmark to ${category.title}`}
+                    style={{
+                      width: "22px",
+                      height: "22px",
+                      borderRadius: "50%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      background: "var(--surface-color)",
+                      border: `1px solid ${category.borderColor}`,
+                      color: category.accentColor,
+                      fontSize: "0.95rem",
+                      fontWeight: "700",
+                      cursor: "pointer",
+                      padding: 0,
+                      lineHeight: 1,
+                      transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
+                      boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04)",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = category.accentColor;
+                      e.currentTarget.style.color = "#ffffff";
+                      e.currentTarget.style.borderColor = category.accentColor;
+                      e.currentTarget.style.transform = "scale(1.1)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = "var(--surface-color)";
+                      e.currentTarget.style.color = category.accentColor;
+                      e.currentTarget.style.borderColor = category.borderColor;
+                      e.currentTarget.style.transform = "scale(1)";
+                    }}
+                  >
+                    +
+                  </button>
+                </div>
               </div>
 
               {/* Entries List - Clickable Tiles without input boxes */}
@@ -358,15 +398,14 @@ export default function HybridFitnessPage() {
                         padding: "0.55rem 0.85rem",
                         borderRadius: "10px",
                         cursor: "pointer",
+                        boxShadow: "0 1px 3px rgba(0, 0, 0, 0.03)",
                         transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.background = "rgba(255, 255, 255, 0.08)";
                         e.currentTarget.style.borderColor = category.accentColor;
                         e.currentTarget.style.transform = "translateX(3px)";
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.background = "var(--surface-color)";
                         e.currentTarget.style.borderColor = "var(--surface-border)";
                         e.currentTarget.style.transform = "translateX(0)";
                       }}
@@ -418,37 +457,7 @@ export default function HybridFitnessPage() {
                 })}
               </div>
 
-              {/* Add Benchmark Button */}
-              <button
-                onClick={() => handleAddBenchmark(category.id)}
-                style={{
-                  width: "100%",
-                  marginTop: "0.25rem",
-                  padding: "0.4rem 0.6rem",
-                  borderRadius: "10px",
-                  border: `1px dashed ${category.borderColor}`,
-                  background: "rgba(255, 255, 255, 0.03)",
-                  color: "var(--text-secondary)",
-                  fontSize: "0.78rem",
-                  fontWeight: "600",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "0.3rem",
-                  transition: "all 0.2s",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = "rgba(255, 255, 255, 0.08)";
-                  e.currentTarget.style.color = "var(--text-primary)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = "rgba(255, 255, 255, 0.03)";
-                  e.currentTarget.style.color = "var(--text-secondary)";
-                }}
-              >
-                <span>+ Add Benchmark</span>
-              </button>
+
             </div>
           );
         })}
@@ -470,35 +479,42 @@ export default function HybridFitnessPage() {
                 maxWidth: "760px",
                 width: "100%",
                 padding: "1.75rem",
-                background: "var(--bg-color)",
-                color: "var(--text-primary)",
                 borderRadius: "20px",
                 border: "1px solid var(--surface-border)",
-                boxShadow: "0 20px 50px rgba(0, 0, 0, 0.4)",
                 position: "relative",
               }}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Modal Header */}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1.25rem", borderBottom: "1px solid var(--surface-border)", paddingBottom: "0.85rem" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: "1.25rem",
+                  paddingBottom: "1rem",
+                  borderBottom: "1px solid var(--surface-border)",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: "0.85rem" }}>
                   <span
                     style={{
                       fontSize: "1.75rem",
                       background: "var(--surface-color)",
-                      width: "44px",
-                      height: "44px",
-                      borderRadius: "12px",
+                      width: "48px",
+                      height: "48px",
+                      borderRadius: "14px",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      border: `1px solid ${activeCategory.borderColor}`,
+                      border: `1.5px solid ${activeCategory.borderColor}`,
+                      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)",
                     }}
                   >
                     {activeCategory.icon}
                   </span>
                   <div>
-                    <h2 style={{ fontSize: "1.35rem", fontWeight: "700", color: "var(--text-primary)", margin: 0 }}>
+                    <h2 style={{ fontSize: "1.4rem", fontWeight: "700", color: "var(--text-primary)", margin: 0 }}>
                       {activeItem.name}
                     </h2>
                     <span style={{ fontSize: "0.75rem", color: activeCategory.accentColor, fontWeight: "600" }}>
@@ -513,22 +529,23 @@ export default function HybridFitnessPage() {
                     background: "var(--surface-color)",
                     border: "1px solid var(--surface-border)",
                     color: "var(--text-secondary)",
-                    width: "32px",
-                    height: "32px",
+                    width: "34px",
+                    height: "34px",
                     borderRadius: "50%",
                     cursor: "pointer",
                     fontSize: "1.2rem",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    transition: "background 0.2s, color 0.2s",
+                    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04)",
+                    transition: "all 0.2s",
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = "var(--surface-border)";
+                    e.currentTarget.style.borderColor = activeCategory.borderColor;
                     e.currentTarget.style.color = "var(--text-primary)";
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.background = "var(--surface-color)";
+                    e.currentTarget.style.borderColor = "var(--surface-border)";
                     e.currentTarget.style.color = "var(--text-secondary)";
                   }}
                 >
@@ -541,162 +558,262 @@ export default function HybridFitnessPage() {
                 style={{
                   display: "grid",
                   gridTemplateColumns: "repeat(auto-fit, minmax(310px, 1fr))",
-                  gap: "1.5rem",
-                  alignItems: "start",
+                  gap: "1.25rem",
+                  alignItems: "stretch",
                 }}
               >
-                {/* LEFT HALF: Current PR Highlight & Log Form */}
-                <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                {/* LEFT HALF PANEL: Current PR Card & Log Form Card */}
+                <div
+                  style={{
+                    background: "var(--surface-color)",
+                    border: "1px solid var(--surface-border)",
+                    borderRadius: "16px",
+                    padding: "1.15rem",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "1rem",
+                    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)",
+                  }}
+                >
                   {/* Current PR Highlight Box */}
                   <div
                     style={{
-                      background: "var(--surface-color)",
-                      border: `1px solid ${activeCategory.borderColor}`,
-                      borderRadius: "14px",
+                      background: "var(--bg-color)",
+                      border: `1.5px solid ${activeCategory.borderColor}`,
+                      borderRadius: "12px",
                       padding: "0.9rem 1.15rem",
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "center",
+                      boxShadow: "0 1px 4px rgba(0, 0, 0, 0.03)",
                     }}
                   >
                     <div>
-                      <span style={{ fontSize: "0.72rem", textTransform: "uppercase", letterSpacing: "1px", color: "var(--text-secondary)", display: "block" }}>
+                      <span style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "1px", color: "var(--text-secondary)", fontWeight: "600", display: "block" }}>
                         Current PR Value
                       </span>
-                      <div style={{ fontSize: "1.7rem", fontWeight: "800", color: activeItem.prValue ? activeCategory.accentColor : "var(--text-secondary)", marginTop: "0.15rem" }}>
+                      <div style={{ fontSize: "1.65rem", fontWeight: "800", color: activeItem.prValue ? activeCategory.accentColor : "var(--text-secondary)", marginTop: "0.15rem" }}>
                         {activeItem.prValue || "None logged"}
                       </div>
                     </div>
                     <span style={{ fontSize: "2rem" }}>🏆</span>
                   </div>
 
-                  {/* Form to Enter New Value */}
-                  <form onSubmit={handleAddNewValue} style={{ display: "flex", flexDirection: "column", gap: "0.65rem" }}>
-                    <div style={{ fontSize: "0.85rem", fontWeight: "600", color: "var(--text-primary)" }}>
-                      Log New Entry & Auto-Update PR
+                  {/* Form Container with Header */}
+                  <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", borderTop: "1px solid var(--surface-border)", paddingTop: "0.85rem" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <span style={{ fontSize: "0.76rem", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.6px", color: "var(--text-secondary)" }}>
+                        Log New Entry
+                      </span>
+                      <span style={{ fontSize: "0.7rem", color: activeCategory.accentColor, fontWeight: "600" }}>
+                        Auto-updates PR
+                      </span>
                     </div>
 
-                    <div>
-                      <label style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.5px", color: "var(--text-secondary)", display: "block", marginBottom: "0.25rem" }}>
-                        Score / Time / Weight
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        placeholder={activeItem.unitPlaceholder || "e.g. 140 kg"}
-                        value={newValueInput}
-                        onChange={(e) => setNewValueInput(e.target.value)}
+                    <form onSubmit={handleAddNewValue} style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+                      <div>
+                        <label style={{ fontSize: "0.7rem", fontWeight: "600", textTransform: "uppercase", letterSpacing: "0.5px", color: "var(--text-secondary)", display: "block", marginBottom: "0.3rem" }}>
+                          Score / Time / Weight
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          placeholder={activeItem.unitPlaceholder || "e.g. 140 kg"}
+                          value={newValueInput}
+                          onChange={(e) => setNewValueInput(e.target.value)}
+                          style={{
+                            width: "100%",
+                            padding: "0.55rem 0.8rem",
+                            borderRadius: "10px",
+                            border: "1px solid var(--surface-border)",
+                            background: "var(--input-bg)",
+                            color: "var(--text-primary)",
+                            fontSize: "0.88rem",
+                            outline: "none",
+                            boxShadow: "0 1px 3px rgba(0, 0, 0, 0.03)",
+                            transition: "border-color 0.2s, box-shadow 0.2s",
+                          }}
+                          onFocus={(e) => {
+                            e.currentTarget.style.borderColor = activeCategory.accentColor;
+                            e.currentTarget.style.boxShadow = `0 0 0 3px ${activeCategory.borderColor}`;
+                          }}
+                          onBlur={(e) => {
+                            e.currentTarget.style.borderColor = "var(--surface-border)";
+                            e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.03)";
+                          }}
+                        />
+                      </div>
+
+                      <div>
+                        <label style={{ fontSize: "0.7rem", fontWeight: "600", textTransform: "uppercase", letterSpacing: "0.5px", color: "var(--text-secondary)", display: "block", marginBottom: "0.3rem" }}>
+                          Date
+                        </label>
+                        <input
+                          type="date"
+                          value={newDateInput}
+                          onChange={(e) => setNewDateInput(e.target.value)}
+                          style={{
+                            width: "100%",
+                            padding: "0.5rem 0.8rem",
+                            borderRadius: "10px",
+                            border: "1px solid var(--surface-border)",
+                            background: "var(--input-bg)",
+                            color: "var(--text-primary)",
+                            fontSize: "0.82rem",
+                            outline: "none",
+                            boxShadow: "0 1px 3px rgba(0, 0, 0, 0.03)",
+                            transition: "border-color 0.2s, box-shadow 0.2s",
+                          }}
+                          onFocus={(e) => {
+                            e.currentTarget.style.borderColor = activeCategory.accentColor;
+                            e.currentTarget.style.boxShadow = `0 0 0 3px ${activeCategory.borderColor}`;
+                          }}
+                          onBlur={(e) => {
+                            e.currentTarget.style.borderColor = "var(--surface-border)";
+                            e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.03)";
+                          }}
+                        />
+                      </div>
+
+                      <div>
+                        <label style={{ fontSize: "0.7rem", fontWeight: "600", textTransform: "uppercase", letterSpacing: "0.5px", color: "var(--text-secondary)", display: "block", marginBottom: "0.3rem" }}>
+                          Note (Optional)
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="e.g. Set during test week"
+                          value={newNoteInput}
+                          onChange={(e) => setNewNoteInput(e.target.value)}
+                          style={{
+                            width: "100%",
+                            padding: "0.5rem 0.8rem",
+                            borderRadius: "10px",
+                            border: "1px solid var(--surface-border)",
+                            background: "var(--input-bg)",
+                            color: "var(--text-primary)",
+                            fontSize: "0.82rem",
+                            outline: "none",
+                            boxShadow: "0 1px 3px rgba(0, 0, 0, 0.03)",
+                            transition: "border-color 0.2s, box-shadow 0.2s",
+                          }}
+                          onFocus={(e) => {
+                            e.currentTarget.style.borderColor = activeCategory.accentColor;
+                            e.currentTarget.style.boxShadow = `0 0 0 3px ${activeCategory.borderColor}`;
+                          }}
+                          onBlur={(e) => {
+                            e.currentTarget.style.borderColor = "var(--surface-border)";
+                            e.currentTarget.style.boxShadow = "0 1px 3px rgba(0, 0, 0, 0.03)";
+                          }}
+                        />
+                      </div>
+
+                      <button
+                        type="submit"
                         style={{
+                          marginTop: "0.25rem",
                           width: "100%",
-                          padding: "0.55rem 0.8rem",
+                          padding: "0.6rem 1.1rem",
                           borderRadius: "10px",
-                          border: "1px solid var(--surface-border)",
-                          background: "var(--input-bg)",
-                          color: "var(--text-primary)",
-                          fontSize: "0.9rem",
-                          outline: "none",
+                          background: "var(--accent-gradient)",
+                          border: "none",
+                          color: "white",
+                          fontWeight: "600",
+                          fontSize: "0.88rem",
+                          cursor: "pointer",
+                          boxShadow: "0 4px 12px rgba(139, 92, 246, 0.3)",
+                          transition: "transform 0.15s, box-shadow 0.15s",
                         }}
-                      />
-                    </div>
-
-                    <div>
-                      <label style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.5px", color: "var(--text-secondary)", display: "block", marginBottom: "0.25rem" }}>
-                        Date
-                      </label>
-                      <input
-                        type="date"
-                        value={newDateInput}
-                        onChange={(e) => setNewDateInput(e.target.value)}
-                        style={{
-                          width: "100%",
-                          padding: "0.5rem 0.8rem",
-                          borderRadius: "10px",
-                          border: "1px solid var(--surface-border)",
-                          background: "var(--input-bg)",
-                          color: "var(--text-primary)",
-                          fontSize: "0.82rem",
-                          outline: "none",
-                        }}
-                      />
-                    </div>
-
-                    <div>
-                      <label style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.5px", color: "var(--text-secondary)", display: "block", marginBottom: "0.25rem" }}>
-                        Note (Optional)
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="e.g. Set during test week"
-                        value={newNoteInput}
-                        onChange={(e) => setNewNoteInput(e.target.value)}
-                        style={{
-                          width: "100%",
-                          padding: "0.5rem 0.8rem",
-                          borderRadius: "10px",
-                          border: "1px solid var(--surface-border)",
-                          background: "var(--input-bg)",
-                          color: "var(--text-primary)",
-                          fontSize: "0.82rem",
-                          outline: "none",
-                        }}
-                      />
-                    </div>
-
-                    <button
-                      type="submit"
-                      style={{
-                        marginTop: "0.25rem",
-                        width: "100%",
-                        padding: "0.55rem 1.1rem",
-                        borderRadius: "10px",
-                        background: "var(--accent-gradient)",
-                        border: "none",
-                        color: "white",
-                        fontWeight: "600",
-                        fontSize: "0.88rem",
-                        cursor: "pointer",
-                        boxShadow: "0 4px 12px rgba(139, 92, 246, 0.3)",
-                      }}
-                    >
-                      + Log PR
-                    </button>
-                  </form>
+                        onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-1px)")}
+                        onMouseLeave={(e) => (e.currentTarget.style.transform = "translateY(0)")}
+                      >
+                        + Log PR
+                      </button>
+                    </form>
+                  </div>
                 </div>
 
-                {/* RIGHT HALF: Logged History */}
-                <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
-                    <span style={{ fontSize: "0.8rem", textTransform: "uppercase", letterSpacing: "1px", color: "var(--text-secondary)", fontWeight: "600" }}>
-                      Logged History ({sortedHistory.length})
-                    </span>
-                    <span style={{ fontSize: "0.7rem", color: "var(--text-secondary)" }}>
+                {/* RIGHT HALF PANEL: Logged History Card */}
+                <div
+                  style={{
+                    background: "var(--surface-color)",
+                    border: "1px solid var(--surface-border)",
+                    borderRadius: "16px",
+                    padding: "1.15rem",
+                    display: "flex",
+                    flexDirection: "column",
+                    height: "100%",
+                    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      paddingBottom: "0.65rem",
+                      marginBottom: "0.75rem",
+                      borderBottom: "1px solid var(--surface-border)",
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                      <span style={{ fontSize: "0.76rem", fontWeight: "700", textTransform: "uppercase", letterSpacing: "0.6px", color: "var(--text-secondary)" }}>
+                        Logged History
+                      </span>
+                      <span
+                        style={{
+                          fontSize: "0.68rem",
+                          fontWeight: "700",
+                          background: "var(--bg-color)",
+                          border: "1px solid var(--surface-border)",
+                          color: "var(--text-primary)",
+                          padding: "0.1rem 0.45rem",
+                          borderRadius: "10px",
+                        }}
+                      >
+                        {sortedHistory.length}
+                      </span>
+                    </div>
+                    <span
+                      style={{
+                        fontSize: "0.68rem",
+                        color: "var(--text-secondary)",
+                        background: "var(--bg-color)",
+                        padding: "0.15rem 0.45rem",
+                        borderRadius: "10px",
+                        border: "1px solid var(--surface-border)",
+                      }}
+                    >
                       Latest first
                     </span>
                   </div>
 
                   <div
                     style={{
-                      maxHeight: "330px",
+                      maxHeight: "340px",
                       overflowY: "auto",
                       display: "flex",
                       flexDirection: "column",
-                      gap: "0.45rem",
+                      gap: "0.5rem",
                       paddingRight: "0.25rem",
+                      flex: 1,
                     }}
                   >
                     {sortedHistory.length === 0 ? (
                       <div
                         style={{
                           textAlign: "center",
-                          padding: "2rem 1rem",
-                          background: "var(--surface-color)",
-                          borderRadius: "12px",
+                          padding: "2.5rem 1rem",
+                          background: "var(--bg-color)",
+                          borderRadius: "10px",
                           border: "1px dashed var(--surface-border)",
                           color: "var(--text-secondary)",
                           fontSize: "0.85rem",
                         }}
                       >
-                        No earlier values recorded yet. Log your first value on the left!
+                        No earlier values recorded yet.<br />
+                        <span style={{ fontSize: "0.75rem", opacity: 0.8, marginTop: "0.3rem", display: "inline-block" }}>
+                          Log your first value on the left panel!
+                        </span>
                       </div>
                     ) : (
                       sortedHistory.map((entry) => {
@@ -709,11 +826,17 @@ export default function HybridFitnessPage() {
                               display: "flex",
                               alignItems: "center",
                               justifyContent: "space-between",
-                              padding: "0.55rem 0.8rem",
+                              padding: "0.6rem 0.8rem",
                               borderRadius: "10px",
-                              background: isCurrentPR ? "var(--surface-color)" : "transparent",
-                              border: `1px solid ${isCurrentPR ? activeCategory.borderColor : "var(--surface-border)"}`,
+                              background: isCurrentPR
+                                ? "rgba(139, 92, 246, 0.08)"
+                                : "var(--bg-color)",
+                              border: `1.5px solid ${isCurrentPR ? activeCategory.borderColor : "var(--surface-border)"}`,
+                              boxShadow: isCurrentPR
+                                ? `0 2px 8px ${activeCategory.borderColor}`
+                                : "0 1px 3px rgba(0, 0, 0, 0.02)",
                               gap: "0.5rem",
+                              transition: "all 0.15s ease",
                             }}
                           >
                             <div style={{ minWidth: 0, flex: 1 }}>
@@ -752,17 +875,21 @@ export default function HybridFitnessPage() {
                                     border: "1px solid var(--surface-border)",
                                     color: "var(--text-primary)",
                                     fontSize: "0.7rem",
-                                    padding: "0.22rem 0.45rem",
+                                    fontWeight: "600",
+                                    padding: "0.22rem 0.5rem",
                                     borderRadius: "6px",
                                     cursor: "pointer",
-                                    transition: "all 0.2s",
+                                    transition: "all 0.15s ease",
                                     whiteSpace: "nowrap",
+                                    boxShadow: "0 1px 2px rgba(0, 0, 0, 0.03)",
                                   }}
                                   onMouseEnter={(e) => {
                                     e.currentTarget.style.borderColor = activeCategory.borderColor;
+                                    e.currentTarget.style.color = activeCategory.accentColor;
                                   }}
                                   onMouseLeave={(e) => {
                                     e.currentTarget.style.borderColor = "var(--surface-border)";
+                                    e.currentTarget.style.color = "var(--text-primary)";
                                   }}
                                 >
                                   Set as PR
@@ -775,21 +902,26 @@ export default function HybridFitnessPage() {
                                 title="Delete this record"
                                 style={{
                                   background: "transparent",
-                                  border: "none",
+                                  border: "1px solid transparent",
                                   color: "var(--text-secondary)",
                                   cursor: "pointer",
                                   fontSize: "0.85rem",
-                                  padding: "0.2rem",
-                                  borderRadius: "4px",
+                                  padding: "0.2rem 0.35rem",
+                                  borderRadius: "6px",
                                   opacity: 0.6,
+                                  transition: "all 0.15s ease",
                                 }}
                                 onMouseEnter={(e) => {
                                   e.currentTarget.style.opacity = "1";
                                   e.currentTarget.style.color = "var(--danger-color)";
+                                  e.currentTarget.style.borderColor = "rgba(239, 68, 68, 0.2)";
+                                  e.currentTarget.style.background = "rgba(239, 68, 68, 0.08)";
                                 }}
                                 onMouseLeave={(e) => {
                                   e.currentTarget.style.opacity = "0.6";
                                   e.currentTarget.style.color = "var(--text-secondary)";
+                                  e.currentTarget.style.borderColor = "transparent";
+                                  e.currentTarget.style.background = "transparent";
                                 }}
                               >
                                 &times;

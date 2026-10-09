@@ -19,12 +19,12 @@
 :root[data-theme="light"] {
   --bg-color: #f8fafc;
   --bg-gradient: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-  --surface-color: rgba(255, 255, 255, 0.6);
-  --surface-border: rgba(255, 255, 255, 1);
+  --surface-color: #ffffff;
+  --surface-border: rgba(15, 23, 42, 0.12);
   --text-primary: #0f172a;
   --text-secondary: #475569;
   --navbar-bg: rgba(248, 250, 252, 0.90);
-  --input-bg: rgba(255, 255, 255, 0.6);
+  --input-bg: #ffffff;
   --hamburger-bg: var(--text-primary);
 }
 
@@ -565,8 +565,14 @@ body {
   position: relative;
 }
 
+:root[data-theme="light"] .modal-overlay {
+  background: rgba(15, 23, 42, 0.45);
+}
+
 :root[data-theme="light"] .modal-content {
-  background: var(--bg-color);
+  background: #ffffff;
+  border: 1px solid var(--surface-border);
+  box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.2), 0 0 0 1px var(--surface-border);
 }
 
 .modal-close {
