@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import TrainingCalendar from "@/components/TrainingCalendar";
 
 export interface HistoryEntry {
   id: string;
@@ -80,6 +81,8 @@ const STORAGE_KEY = "lifeos_hybrid_fitness";
 
 export default function HybridFitnessPage() {
   const [categories, setCategories] = useState<BenchmarkCategory[]>(INITIAL_CATEGORIES);
+  const [isExpanded, setIsExpanded] = useState(true);
+  const [isPlanExpanded, setIsPlanExpanded] = useState(true);
 
   // Selected benchmark modal state
   const [activeSelection, setActiveSelection] = useState<{
@@ -258,19 +261,142 @@ export default function HybridFitnessPage() {
   const activeCategory = categories.find((c) => c.id === activeSelection?.categoryId);
   const activeItem = activeCategory?.items.find((i) => i.id === activeSelection?.itemId);
 
+  const totalBenchmarks = categories.reduce((sum, cat) => sum + cat.items.length, 0);
+  const totalLogged = categories.reduce(
+    (sum, cat) => sum + cat.items.filter((i) => i.prValue.trim().length > 0).length,
+    0
+  );
+
   return (
-    <main className="app-container" style={{ paddingTop: "1rem" }}>
-      {/* 3 Benchmark Cards Grid */}
+    <main className="app-container" style={{ paddingTop: "1rem", display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+      {/* Collapsible Personal Bests Section */}
       <div
+        className="glass-panel"
         style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(290px, 1fr))",
-          gap: "1.2rem",
-          alignItems: "start",
+          borderRadius: "20px",
+          padding: "1.2rem 1.4rem",
+          background: "var(--surface-color)",
+          border: "1px solid var(--surface-border)",
+          boxShadow: "0 8px 32px 0 rgba(0, 0, 0, 0.2)",
+          backdropFilter: "blur(16px)",
+          WebkitBackdropFilter: "blur(16px)",
         }}
       >
-        {categories.map((category) => {
-          const filledCount = category.items.filter((i) => i.prValue.trim().length > 0).length;
+        {/* Clickable Header */}
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={() => setIsExpanded((prev) => !prev)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              setIsExpanded((prev) => !prev);
+            }
+          }}
+          title={isExpanded ? "Click to collapse Personal Bests" : "Click to expand Personal Bests"}
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            cursor: "pointer",
+            userSelect: "none",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+            <span
+              style={{
+                fontSize: "1.35rem",
+                background: "rgba(255, 255, 255, 0.08)",
+                width: "40px",
+                height: "40px",
+                borderRadius: "12px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                border: "1px solid var(--surface-border)",
+              }}
+            >
+              🏆
+            </span>
+            <div>
+              <h1
+                style={{
+                  fontSize: "1.35rem",
+                  fontWeight: "700",
+                  color: "var(--text-primary)",
+                  margin: 0,
+                  lineHeight: "1.2",
+                  letterSpacing: "-0.01em",
+                }}
+              >
+                Personal Bests
+              </h1>
+              <span style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}>
+                {totalLogged} of {totalBenchmarks} logged • {categories.length} categories
+              </span>
+            </div>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
+            <span
+              style={{
+                fontSize: "0.72rem",
+                fontWeight: "600",
+                color: "var(--text-secondary)",
+                background: "rgba(255, 255, 255, 0.05)",
+                padding: "0.22rem 0.55rem",
+                borderRadius: "12px",
+                border: "1px solid var(--surface-border)",
+              }}
+            >
+              {isExpanded ? "Collapse" : "Expand"}
+            </span>
+            <div
+              style={{
+                width: "32px",
+                height: "32px",
+                borderRadius: "50%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "rgba(255, 255, 255, 0.06)",
+                border: "1px solid var(--surface-border)",
+                color: "var(--text-primary)",
+                transition: "transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
+                transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
+              }}
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        {/* 3 Benchmark Cards Grid (Collapsible) */}
+        {isExpanded && (
+          <div
+            style={{
+              marginTop: "1.2rem",
+              paddingTop: "1.2rem",
+              borderTop: "1px solid var(--surface-border)",
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(290px, 1fr))",
+              gap: "1.2rem",
+              alignItems: "start",
+            }}
+          >
+            {categories.map((category) => {
+              const filledCount = category.items.filter((i) => i.prValue.trim().length > 0).length;
 
           return (
             <div
@@ -461,6 +587,135 @@ export default function HybridFitnessPage() {
             </div>
           );
         })}
+          </div>
+        )}
+      </div>
+
+      {/* Collapsible Daily Training Plan Calendar Section */}
+      <div
+        className="glass-panel"
+        style={{
+          borderRadius: "20px",
+          padding: "1.2rem 1.4rem",
+          background: "var(--surface-color)",
+          border: "1px solid var(--surface-border)",
+          boxShadow: "0 8px 32px 0 rgba(0, 0, 0, 0.2)",
+          backdropFilter: "blur(16px)",
+          WebkitBackdropFilter: "blur(16px)",
+        }}
+      >
+        {/* Clickable Header */}
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={() => setIsPlanExpanded((prev) => !prev)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              setIsPlanExpanded((prev) => !prev);
+            }
+          }}
+          title={isPlanExpanded ? "Click to collapse Daily Training Plan" : "Click to expand Daily Training Plan"}
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            cursor: "pointer",
+            userSelect: "none",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+            <span
+              style={{
+                fontSize: "1.35rem",
+                background: "rgba(255, 255, 255, 0.08)",
+                width: "40px",
+                height: "40px",
+                borderRadius: "12px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                border: "1px solid var(--surface-border)",
+              }}
+            >
+              📅
+            </span>
+            <div>
+              <h2
+                style={{
+                  fontSize: "1.35rem",
+                  fontWeight: "700",
+                  color: "var(--text-primary)",
+                  margin: 0,
+                  lineHeight: "1.2",
+                  letterSpacing: "-0.01em",
+                }}
+              >
+                Daily Training Plan & Calendar
+              </h2>
+              <span style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}>
+                End-of-Year Plan (Oct 11 – Dec 31) • Daily workouts scaled to your PRs
+              </span>
+            </div>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
+            <span
+              style={{
+                fontSize: "0.72rem",
+                fontWeight: "600",
+                color: "var(--text-secondary)",
+                background: "rgba(255, 255, 255, 0.05)",
+                padding: "0.22rem 0.55rem",
+                borderRadius: "12px",
+                border: "1px solid var(--surface-border)",
+              }}
+            >
+              {isPlanExpanded ? "Collapse" : "Expand"}
+            </span>
+            <div
+              style={{
+                width: "32px",
+                height: "32px",
+                borderRadius: "50%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "rgba(255, 255, 255, 0.06)",
+                border: "1px solid var(--surface-border)",
+                color: "var(--text-primary)",
+                transition: "transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
+                transform: isPlanExpanded ? "rotate(180deg)" : "rotate(0deg)",
+              }}
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        {/* Collapsible Content Area */}
+        {isPlanExpanded && (
+          <div
+            style={{
+              marginTop: "1.2rem",
+              paddingTop: "1.2rem",
+              borderTop: "1px solid var(--surface-border)",
+            }}
+          >
+            <TrainingCalendar />
+          </div>
+        )}
       </div>
 
       {/* Benchmark Detail & History Modal */}

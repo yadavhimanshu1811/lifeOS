@@ -1,0 +1,44 @@
+{
+  "15_oct_stats": {
+    "date": "2026-10-15",
+    "run_5km": "26:00",
+    "pullups_max_reps": 15,
+    "pushups_max_reps": 40,
+    "bodyweight_squats_max_reps": 60,
+    "bench_press_1rm_kg": 90,
+    "deadlift_1rm_kg": 120,
+    "barbell_back_squat_1rm_kg": 110
+  },
+  "new_year_expected_stats": {
+    "target_date": "2027-01-01",
+    "training_sessions_per_week": 4,
+    "run_5km": {
+      "expected": "24:30",
+      "range": ["23:45", "25:15"]
+    },
+    "pullups_max_reps": {
+      "expected": 18,
+      "range": [16, 20]
+    },
+    "pushups_max_reps": {
+      "expected": 50,
+      "range": [45, 55]
+    },
+    "bodyweight_squats_max_reps": {
+      "expected": 80,
+      "range": [70, 95]
+    },
+    "bench_press_1rm_kg": {
+      "expected": 97.5,
+      "range": [92.5, 102.5]
+    },
+    "deadlift_1rm_kg": {
+      "expected": 132.5,
+      "range": [125, 142.5]
+    },
+    "barbell_back_squat_1rm_kg": {
+      "expected": 120,
+      "range": [115, 127.5]
+    }
+  }
+}
